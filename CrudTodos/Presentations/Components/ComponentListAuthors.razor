@@ -1,0 +1,99 @@
+﻿@inject IBookRepository BookService
+@inject IAuthorRepository AuthorService
+@inject NavigationManager Navigation
+
+<h3 class="text-center text-primary">Buscar Autores</h3>
+<input type="text" class="form-control mb-3"
+       placeholder="Buscar por Nombre o Código..."
+       @bind="searchTerm"
+       @oninput="DebounceFilterAuthors" />
+
+@if (filteredAuthors == null || !filteredAuthors.Any())
+{
+    <p class="text-center text-muted fs-5">Cargando...</p>
+}
+else
+{
+    <div class="row">
+        @foreach (var author in PaginateAuthors())
+        {
+            var authorBooks = BooksPerAuthor(author.Author_Id); // Obtener libros del autor
+
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-lg border-light" style="background-color: #f9f9f9;">
+                    <img src="" class="card-img-top img-fluid rounded-top"
+                         alt="Foto de @author.Name" onerror="this.src='https://via.placeholder.com/150';">
+
+                    <div class="card-body">
+                        <h5 class="card-title text-primary">@author.Name</h5>
+                        <p class="card-text"><strong>Cédula:</strong> @author.Author_Id</p>
+                        <p class="card-text"><strong>Edad:</strong> @author.Age años</p>
+                        <p class="card-text"><strong>Bibliografía:</strong> @author.Biography</p>
+                        <p class="card-text"><strong>Libros Publicados:</strong> @authorBooks.Count</p>
+
+                        <ul class="list-group list-group-flush">
+                            @foreach (var book in authorBooks)
+                            {
+                                <li class="list-group-item" style="background-color: #f1f1f1;">@book.Title</li>
+                            }
+                        </ul>
+
+                        <div class="d-flex justify-content-between mt-3">
+                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editAuthorModal" @onclick="() => OpenEditModal(author)">
+                                <i class="fas fa-edit"></i> Editar
+                            </button>
+                            <button class="btn btn-danger btn-sm" @onclick="() => DeleteAuthor(author.Author_Id)">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="d-flex justify-content-center align-items-center mt-4">
+        <button class="btn btn-secondary me-2" @onclick="GoToPreviousPage" disabled="@((currentPage == 1))">
+            <i class="fas fa-arrow-left"></i> Anterior
+        </button>
+        <span class="fw-bold">Página @currentPage de @totalPages</span>
+        <button class="btn btn-secondary ms-2" @onclick="GoToNextPage" disabled="@((currentPage == totalPages))">
+            Siguiente <i class="fas fa-arrow-right"></i>
+        </button>
+    </div>
+}
+
+<div class="modal fade" id="editAuthorModal" tabindex="-1" aria-labelledby="editCustomerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #007bff; color: white;">
+                <h5 class="modal-title" id="editCustomerModalLabel">Editar Autor</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <EditForm Model="selectedAuthor" OnValidSubmit="GuardarCambios">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <div class="mb-3">
+                        <label class="form-label">Código:</label>
+                        <InputText class="form-control" @bind-Value="selectedAuthor.Author_Id" Disabled />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Nombre:</label>
+                        <InputText class="form-control" @bind-Value="selectedAuthor.Name" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Edad:</label>
+                        <InputNumber class="form-control" @bind-Value="selectedAuthor.Age" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Bibliografía:</label>
+                        <InputText class="form-control" @bind-Value="selectedAuthor.Biography" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+

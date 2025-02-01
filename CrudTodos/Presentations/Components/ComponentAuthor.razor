@@ -1,0 +1,73 @@
+﻿@inject IAuthorRepository AuthorService
+@inject NavigationManager Navigate
+@inject IJSRuntime JS
+
+<h3>Agregar Autor</h3>
+
+@if (ShowAlert)
+{
+    <div class="alert @AlertClass alert-dismissible fade show text-center fw-bold" role="alert">
+        @Mensaje
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<EditForm Model="NewAuthor" OnValidSubmit="SaveAuthor">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group mb-3">
+        <label for="cedulaAutor" class="form-label">Cédula del Autor:</label>
+        <InputText id="cedulaAutor" @bind-Value="NewAuthor.Author_Id" class="form-control" autofocus />
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="nombreAutor" class="form-label">Nombre del Autor:</label>
+        <InputText id="nombreAutor" @bind-Value="NewAuthor.Name" class="form-control" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="edadAutor" class="form-label">Edad del Autor:</label>
+        <InputNumber id="edadAutor" @bind-Value="NewAuthor.Age" class="form-control" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="biografia" class="form-label">Biografía:</label>
+        <InputText id="biografia" @bind-Value="NewAuthor.Biography" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-block">Guardar</button>
+</EditForm>
+
+@code {
+    private Author NewAuthor = new();
+    private string Mensaje;
+    private bool ShowAlert = false;
+    private string AlertClass = "alert-info"; // Estilo de la alerta
+
+    private async Task SaveAuthor()
+    {
+        try
+        {
+            var existAuthor = await AuthorService.IsAuthorUniqueAsync(NewAuthor.Author_Id);
+
+            if (!existAuthor)
+            {
+
+                await AuthorService.UpdateAuthorIfExitsAsync(NewAuthor);
+                Navigate.NavigateTo("ListAuthors", true);
+
+                return;
+            }
+
+            await AuthorService.AddAuthorAsync(NewAuthor);
+            await JS.InvokeVoidAsync("Swal.fire", "Éxito", "Autor agregado con éxito", "success");
+            NewAuthor = new Author();
+            Navigate.NavigateTo("ListAuthors", true);
+        }
+        catch (Exception ex)
+        {
+            await JS.InvokeVoidAsync("Swal.fire", "Error", $"Error al guardar el autor: {ex.Message}", "error");
+        }
+    }
+}

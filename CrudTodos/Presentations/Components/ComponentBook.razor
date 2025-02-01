@@ -1,0 +1,59 @@
+﻿@inject IBookRepository BookService
+@inject IAuthorRepository AuthorService
+@inject NavigationManager Navigate
+
+<h3>Agregar Libros</h3>
+<EditForm Model="NuevoLibro" OnValidSubmit="SaveBook">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group mb-3">
+        <label for="codigoLibro" class="form-label">Codigo Libro:</label>
+        <InputText id="codigoLibro" @bind-Value="NuevoLibro.Id_Book" class="form-control" autofocus />
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="tituloLibro" class="form-label">Titulo del Libro:</label>
+        <InputText id="tituloLibro" @bind-Value="NuevoLibro.Title" class="form-control" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="cantidadPaginas" class="form-label">Cantidad de Paginas:</label>
+        <InputNumber id="cantidadPaginas" @bind-Value="NuevoLibro.Pages" class="form-control" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="cantidadLibros" class="form-label">Cantidad de Libros:</label>
+        <InputNumber id="cantidadLibros" @bind-Value="NuevoLibro.AmountBooks" class="form-control" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="precio" class="form-label">Precio:</label>
+        <InputNumber id="precio" @bind-Value="NuevoLibro.Price" class="form-control" />
+    </div>
+
+    <div class="form-group mb-3">
+        <label for="fechaEdicion" class="form-label">Edición:</label>
+        <InputDate id="fechaEdicion" @bind-value="NuevoLibro.Edition_date" class="form-control" />
+    </div>
+
+    <div class="form-group mb-4">
+        <label for="autorSelect" class="form-label">Autor:</label>
+        <select id="autorSelect" @bind="NuevoLibro.Author_id" class="form-control">
+            <option value="">-- Seleccione un autor --</option>
+            @foreach (var autor in Authors)
+            {
+                <option value="@autor.Author_Id">@autor.Name</option>
+            }
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-block">Guardar</button>
+
+    @if (!string.IsNullOrEmpty(Mensaje))
+    {
+        <div class="alert alert-success mt-3" role="alert">
+            @Mensaje
+        </div>
+    }
+</EditForm>

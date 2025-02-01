@@ -1,0 +1,120 @@
+﻿@inject IBookRepository BookService
+@inject IAuthorRepository AuthorService
+@inject NavigationManager Navigation
+
+
+<h3 class="text-center mb-4">Buscar Libros</h3>
+<input type="text" class="form-control mb-3 border-secondary"
+       placeholder="Buscar por Título o Código..."
+       @bind="searchTerm"
+       @oninput="DebounceFilterCustomers" />
+
+@if (filteredBooks == null || !filteredBooks.Any())
+{
+    <p class="text-center text-muted fs-5">Cargando...</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover shadow-sm rounded">
+            <thead class="bg-info text-white">
+                <tr>
+                    <th>Codigo</th>
+                    <th>Titulo</th>
+                    <th>Paginas</th>
+                    <th>Precio</th>
+                    <th>Fecha Edición</th>
+                    <th>Autor</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var book in PaginateBooks())
+                {
+                    <tr>
+                        <td>@book.Id_Book</td>
+                        <td>@book.Title</td>
+                        <td>@book.Pages</td>
+                        <td>@book.Price</td>
+                        <td>@book.Edition_date</td>
+                        <td>@book.Author_id</td>
+                        <td class="text-center">
+                            <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editBookModal" @onclick="() => OpenEditModal(book)">
+                                <i class="fas fa-edit"></i> Editar
+                            </button>
+
+                            <button class="btn btn-danger btn-sm" @onclick="() => DeleteBook(book.Id_Book)">
+                                <i class="fas fa-trash"></i> Eliminar
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="d-flex justify-content-center align-items-center">
+        <button class="btn btn-outline-secondary me-2" @onclick="GoToPreviousPage" disabled="@((currentPage == 1))">
+            <i class="fas fa-arrow-left"></i> Anterior
+        </button>
+        <span class="fw-bold">Página @currentPage de @totalPages</span>
+        <button class="btn btn-outline-secondary ms-2" @onclick="GoToNextPage" disabled="@((currentPage == totalPages))">
+            Siguiente <i class="fas fa-arrow-right"></i>
+        </button>
+    </div>
+}
+
+<!-- Modal Editar Libro -->
+<div class="modal fade" id="editBookModal" tabindex="-1" aria-labelledby="editBookModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title" id="editBookModalLabel">Editar Libro</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <EditForm Model="selectedBook" OnValidSubmit="GuardarCambios">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+
+                    <div class="mb-3">
+                        <label class="form-label">Código:</label>
+                        <InputText class="form-control" @bind-Value="selectedBook.Id_Book" Disabled />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Título:</label>
+                        <InputText class="form-control" @bind-Value="selectedBook.Title" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Páginas:</label>
+                        <InputNumber class="form-control" @bind-Value="selectedBook.Pages" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Precio:</label>
+                        <InputNumber class="form-control" @bind-Value="selectedBook.Price" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Fecha Edición:</label>
+                        <InputDate class="form-control" @bind-Value="selectedBook.Edition_date" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Autor:</label>
+                        <select @bind="selectedBook.Author_id" class="form-control">
+                            <option value="">-- Seleccione un autor --</option>
+                            @foreach (var autor in Authors)
+                            {
+                                <option value="@autor.Author_Id">@autor.Name</option>
+                            }
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-info w-100">Guardar Cambios</button>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
