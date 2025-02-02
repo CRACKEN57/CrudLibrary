@@ -1,0 +1,111 @@
+﻿
+@inject IBookRepository BookService
+@inject IAuthorRepository AuthorService
+@inject NavigationManager Navigation
+
+<div class="container mt-4">
+    <h1 class="text-center mb-4">Reporte de Autores</h1>
+    <div class="table-responsive">
+        <table class="table table-hover shadow rounded border">
+            <thead class="bg-primary text-white">
+                <tr>
+                    <button class="btn btn-primary" @onclick="DownloadPdf">
+                        Descargar
+                        PDF
+                    </button>
+                    <th>
+                        ID
+                        <button class="btn btn-sm btn-light" @onclick='() => SortBy("Author_Id")'>
+                            @if (sortAscending == true || sortColumn != "Author_Id")
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="15" fill="Red" class="bi bi-chevron-compact-up" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M7.776 5.553a.5.5 0 0 1 .448 0l6 3a.5.5 0 1 1-.448.894L8 6.56 2.224 9.447a.5.5 0 1 1-.448-.894z" />
+                                </svg>
+                            }
+                            else
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="15" fill="Blue" class="bi bi-chevron-compact-down" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M1.553 6.776a.5.5 0 0 1 .67-.223L8 9.44l5.776-2.888a.5.5 0 1 1 .448.894l-6 3a.5.5 0 0 1-.448 0l-6-3a.5.5 0 0 1-.223-.67" />
+                                </svg>
+                            }
+                            <i class="fas fa-sort"></i>
+                        </button>
+                    </th>
+                    <th>
+                        Nombre
+                        <button class="btn btn-sm btn-light" @onclick='() => SortBy("Name")'>
+                            @if (sortAscending == true || sortColumn != "Name")
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="15" fill="Red" class="bi bi-chevron-compact-up" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M7.776 5.553a.5.5 0 0 1 .448 0l6 3a.5.5 0 1 1-.448.894L8 6.56 2.224 9.447a.5.5 0 1 1-.448-.894z" />
+                                </svg>
+                            }
+                            else
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="15" fill="Blue" class="bi bi-chevron-compact-down" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M1.553 6.776a.5.5 0 0 1 .67-.223L8 9.44l5.776-2.888a.5.5 0 1 1 .448.894l-6 3a.5.5 0 0 1-.448 0l-6-3a.5.5 0 0 1-.223-.67" />
+                                </svg>
+                            }
+                            <i class="fas fa-sort"></i>
+                        </button>
+                    </th>
+                    <th>
+                        Edad
+                        <button class="btn btn-sm btn-light" @onclick='() => SortBy("Age")'>
+                            @if (sortAscending == true || sortColumn != "Age")
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="15" fill="Red" class="bi bi-chevron-compact-up" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M7.776 5.553a.5.5 0 0 1 .448 0l6 3a.5.5 0 1 1-.448.894L8 6.56 2.224 9.447a.5.5 0 1 1-.448-.894z" />
+                                </svg>
+                            }
+                            else
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="15" fill="Blue" class="bi bi-chevron-compact-down" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M1.553 6.776a.5.5 0 0 1 .67-.223L8 9.44l5.776-2.888a.5.5 0 1 1 .448.894l-6 3a.5.5 0 0 1-.448 0l-6-3a.5.5 0 0 1-.223-.67" />
+                                </svg>
+                            }
+                            <i class="fas fa-sort"></i>
+                        </button>
+                    </th>
+                    <th>
+                        Biografia
+                        <button class="btn btn-sm btn-light" @onclick='() => SortBy("Biography")'>
+                            @if (sortAscending == true || sortColumn != "Biography")
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="15" fill="Red" class="bi bi-chevron-compact-up" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M7.776 5.553a.5.5 0 0 1 .448 0l6 3a.5.5 0 1 1-.448.894L8 6.56 2.224 9.447a.5.5 0 1 1-.448-.894z" />
+                                </svg>
+                            }
+                            else
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="15" fill="Blue" class="bi bi-chevron-compact-down" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M1.553 6.776a.5.5 0 0 1 .67-.223L8 9.44l5.776-2.888a.5.5 0 1 1 .448.894l-6 3a.5.5 0 0 1-.448 0l-6-3a.5.5 0 0 1-.223-.67" />
+                                </svg>
+                            }
+                            <i class="fas fa-sort"></i>
+                        </button>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var author in authors)
+                {
+                    <tr>
+                        <th>
+                            @author.Author_Id
+                        </th>
+                        <th>
+                            @author.Name
+                        </th>
+                        <th>
+                            @author.Age
+                        </th>
+                        <th>
+                            @author.Biography
+                        </th>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

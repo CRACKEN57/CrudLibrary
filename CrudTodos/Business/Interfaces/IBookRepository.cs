@@ -11,5 +11,6 @@ namespace CrudTodos.Business.Interfaces
         Task UpdateBookAsync(Book book);
         Task UpdateBookIfExits(Book book);
         Task<bool> IsBookUniqueAsync(string id);
+        byte[] GeneratePdfReport(List<Book> books);
     }
 }

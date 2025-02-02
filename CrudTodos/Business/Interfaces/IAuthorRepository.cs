@@ -16,5 +16,6 @@ namespace CrudTodos.Business.Interfaces
         Task UpdateAuthorIfExitsAsync(Author author);
 
         Task<bool> IsAuthorUniqueAsync(string Author_Id);
+        byte[] GeneratePdfReport(List<Author> authors);
     }
 }

@@ -1,0 +1,140 @@
+﻿@inject IBookRepository BookService
+@inject IAuthorRepository AuthorService
+@inject NavigationManager Navigation
+
+<div class="container mt-4">
+    <h1 class="text-center mb-4">Reporte de Libros</h1>
+    <div class="table-responsive">
+        <table class="table table-hover shadow rounded border">
+            <thead class="bg-primary text-white">
+                    <button class="btn btn-primary" @onclick="DownloadPdf">
+                        Descargar
+                        PDF
+                    </button>
+                <tr>
+                    <th>
+                        Código
+                        <button class="btn btn-sm btn-light" @onclick='() => SortBy("Id_Book")'>
+                            @if (sortAscending == true || sortColumn != "Id_Book")
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="15" fill="Red" class="bi bi-chevron-compact-up" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M7.776 5.553a.5.5 0 0 1 .448 0l6 3a.5.5 0 1 1-.448.894L8 6.56 2.224 9.447a.5.5 0 1 1-.448-.894z" />
+                                </svg>
+                            }
+                            else
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="15" fill="Blue" class="bi bi-chevron-compact-down" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M1.553 6.776a.5.5 0 0 1 .67-.223L8 9.44l5.776-2.888a.5.5 0 1 1 .448.894l-6 3a.5.5 0 0 1-.448 0l-6-3a.5.5 0 0 1-.223-.67" />
+                                </svg>
+                            }
+                            <i class="fas fa-sort"></i>
+                        </button>
+                    </th>
+                    <th>
+                        Título
+                        <button class="btn btn-sm btn-light" @onclick='() => SortBy("Title")'>
+                            @if (sortAscending == true || sortColumn != "Title")
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="15" fill="Red" class="bi bi-chevron-compact-up" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M7.776 5.553a.5.5 0 0 1 .448 0l6 3a.5.5 0 1 1-.448.894L8 6.56 2.224 9.447a.5.5 0 1 1-.448-.894z" />
+                                </svg>
+                            }
+                            else
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="15" fill="Blue" class="bi bi-chevron-compact-down" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M1.553 6.776a.5.5 0 0 1 .67-.223L8 9.44l5.776-2.888a.5.5 0 1 1 .448.894l-6 3a.5.5 0 0 1-.448 0l-6-3a.5.5 0 0 1-.223-.67" />
+                                </svg>
+                            }
+                            <i class="fas fa-sort"></i>
+                        </button>
+                    </th>
+                    <th>
+                        Páginas
+                        <button class="btn btn-sm btn-light" @onclick='() => SortBy("Pages")'>
+                            @if (sortAscending == true || sortColumn != "Pages")
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="15" fill="Red" class="bi bi-chevron-compact-up" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M7.776 5.553a.5.5 0 0 1 .448 0l6 3a.5.5 0 1 1-.448.894L8 6.56 2.224 9.447a.5.5 0 1 1-.448-.894z" />
+                                </svg>
+                            }
+                            else
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="15" fill="Blue" class="bi bi-chevron-compact-down" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M1.553 6.776a.5.5 0 0 1 .67-.223L8 9.44l5.776-2.888a.5.5 0 1 1 .448.894l-6 3a.5.5 0 0 1-.448 0l-6-3a.5.5 0 0 1-.223-.67" />
+                                </svg>
+                            }
+                            <i class="fas fa-sort"></i>
+                        </button>
+                    </th>
+                    <th>
+                        Precio
+                        <button class="btn btn-sm btn-light" @onclick='() => SortBy("Price")'>
+                            @if (sortAscending == true || sortColumn != "Price")
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="15" fill="Red" class="bi bi-chevron-compact-up" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M7.776 5.553a.5.5 0 0 1 .448 0l6 3a.5.5 0 1 1-.448.894L8 6.56 2.224 9.447a.5.5 0 1 1-.448-.894z" />
+                                </svg>
+                            }
+                            else
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="15" fill="Blue" class="bi bi-chevron-compact-down" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M1.553 6.776a.5.5 0 0 1 .67-.223L8 9.44l5.776-2.888a.5.5 0 1 1 .448.894l-6 3a.5.5 0 0 1-.448 0l-6-3a.5.5 0 0 1-.223-.67" />
+                                </svg>
+                            }
+                            <i class="fas fa-sort"></i>
+                        </button>
+                    </th>
+                    <th>
+                        Fecha Edición
+                        <button class="btn btn-sm btn-light" @onclick='() => SortBy("Edition_date")'>
+                            @if (sortAscending == true || sortColumn != "Edition_date")
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="15" fill="Red" class="bi bi-chevron-compact-up" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M7.776 5.553a.5.5 0 0 1 .448 0l6 3a.5.5 0 1 1-.448.894L8 6.56 2.224 9.447a.5.5 0 1 1-.448-.894z" />
+                                </svg>
+                            }
+                            else
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="15" fill="Blue" class="bi bi-chevron-compact-down" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M1.553 6.776a.5.5 0 0 1 .67-.223L8 9.44l5.776-2.888a.5.5 0 1 1 .448.894l-6 3a.5.5 0 0 1-.448 0l-6-3a.5.5 0 0 1-.223-.67" />
+                                </svg>
+                            }
+                            <i class="fas fa-sort"></i>
+                        </button>
+                    </th>
+                    <th>
+                        Autor
+                        <button class="btn btn-sm btn-light" @onclick='() => SortBy("Author_id")'>
+                            @if (sortAscending == true || sortColumn != "Author_id")
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="15" fill="Red" class="bi bi-chevron-compact-up" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M7.776 5.553a.5.5 0 0 1 .448 0l6 3a.5.5 0 1 1-.448.894L8 6.56 2.224 9.447a.5.5 0 1 1-.448-.894z" />
+                                </svg>
+                            }
+                            else
+                            {
+                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="15" fill="Blue" class="bi bi-chevron-compact-down" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M1.553 6.776a.5.5 0 0 1 .67-.223L8 9.44l5.776-2.888a.5.5 0 1 1 .448.894l-6 3a.5.5 0 0 1-.448 0l-6-3a.5.5 0 0 1-.223-.67" />
+                                </svg>
+                            }
+                            <i class="fas fa-sort"></i>
+                        </button>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var book in PaginateBooks())
+                {
+                    <tr>
+                        <td>@book.Id_Book</td>
+                        <td>@book.Title</td>
+                        <td>@book.Pages</td>
+                        <td>@book.Price.ToString("C")</td>
+                        <td>@book.Edition_date.ToShortDateString()</td>
+                        <td>@book.Author_id</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

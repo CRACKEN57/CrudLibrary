@@ -3,6 +3,7 @@ using CrudTodos.Business.Repositories;
 using CrudTodos.Data;
 using CrudTodos.Presentations.Components;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.JSInterop;
 using System;
 
 var builder = WebApplication.CreateBuilder(args);
